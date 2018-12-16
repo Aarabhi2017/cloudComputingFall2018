@@ -72,22 +72,22 @@ public class CourseService {
 		if (prof == null) {
 			return null;
 		}
-		Course course = new Course(courseId, dept, professorId, courseId);
+		Course course = new Course(courseId, dept, professorId, " ");
 
 		// Creates a topic
-		CreateTopicRequest createTopicRequest = new CreateTopicRequest(courseId);
-		CreateTopicResult createTopicResult = sns.createTopic(createTopicRequest);
-
-		System.out.println("Value" + createTopicResult.toString());
+		// CreateTopicRequest createTopicRequest = new CreateTopicRequest(courseId);
+		// CreateTopicResult createTopicResult = sns.createTopic(createTopicRequest);
+		//
+		// System.out.println("Value" + createTopicResult.toString());
 
 		dynamoDBMapper.save(course);
 
 		return course;
 	}
 
-	public ArrayList<String> getStudentsList(String courseId) {
+	public List<String> getStudentsList(String courseId) {
 		Course c = getCourse(courseId);
-		System.out.println(c.getRoster());
+		System.out.println("Roster" + c.getRoster());
 		return c.getRoster();
 	}
 
@@ -122,8 +122,7 @@ public class CourseService {
 					break;
 				}
 			}
-			if(!topicArn.isEmpty())
-			{
+			if (!topicArn.isEmpty()) {
 				sns.deleteTopic(topicArn);
 			}
 			return true;

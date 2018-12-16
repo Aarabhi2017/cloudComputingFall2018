@@ -103,7 +103,7 @@ public class StudentsService {
 		ArrayList<String> courseList = student.getCoursesList();
 		Course course = courseService.getCourse(courseIdentification);
 
-		ArrayList<String> roster = courseService.getStudentsList(course.getCourseId());
+		List<String> roster = courseService.getStudentsList(course.getCourseId());
 		roster.add(student.getStudentId());
 
 		String topic = course.getNotificationTopic();
@@ -119,15 +119,18 @@ public class StudentsService {
 		dynamoDBMapper.save(course);
 
 		// Creates a topic if not present, else returns existing topic
-		CreateTopicRequest createTopicRequest = new CreateTopicRequest(topic);
-		CreateTopicResult createTopicResult = sns.createTopic(createTopicRequest);
+		if (!topic.isEmpty()) {
+			CreateTopicRequest createTopicRequest = new CreateTopicRequest(topic);
+			CreateTopicResult createTopicResult = sns.createTopic(createTopicRequest);
 
-		// Subscribe
-		SubscribeRequest subRequest = new SubscribeRequest(createTopicResult.getTopicArn(), "email",
-				student.getEmailId());
-		sns.subscribe(subRequest);
+			// Subscribe
+			SubscribeRequest subRequest = new SubscribeRequest(createTopicResult.getTopicArn(), "email",
+					student.getEmailId());
+			sns.subscribe(subRequest);
+		}
 
 		return true;
+
 	}
 
 	// Delete
@@ -138,7 +141,7 @@ public class StudentsService {
 		Student student = getStudent(studentId);
 
 		ArrayList<String> courseList = student.getCoursesList();
-		ArrayList<String> StudentList = courseService.getStudentsList(courseId);
+		List<String> StudentList = courseService.getStudentsList(courseId);
 
 		for (String courseIdentification : courseList) {
 			if (courseIdentification.equalsIgnoreCase(courseId)) {

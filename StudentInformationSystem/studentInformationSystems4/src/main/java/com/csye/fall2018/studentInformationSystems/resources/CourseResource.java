@@ -35,8 +35,13 @@ public class CourseResource {
 	@GET
 	@Path("/getRoster/{courseId}")
 	// @Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<String> getRoster(@PathParam("courseId") String courseId) {
-		return courseService.getStudentsList(courseId);
+	public List<String> getRoster(@PathParam("courseId") String courseId) {
+		List<String> list = courseService.getStudentsList(courseId);
+		for(String s:list)
+		{
+			System.out.println("Strings "+s);
+		}
+		return list;
 	}
 
 	public Course getCourse(String courseId) {
